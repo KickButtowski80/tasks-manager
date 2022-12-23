@@ -339,6 +339,7 @@ form > :last-child {
 .tasks {
   display: grid;
   gap: 1rem;
+  
 }
 .single-task {
   padding: 1rem 2.5rem;
@@ -349,6 +350,7 @@ form > :last-child {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 5px;
 }
 .single-task:hover {
   box-shadow: var(--shadow-4);

@@ -1,32 +1,20 @@
 <template>
   <div>
-    {{ tasks }}
+    <task-form></task-form>
+    <tasks-list></tasks-list>
   </div>
 </template>
 
 <script>
+import TaskForm from "./components/TaskForm.vue";
+import TasksList from "./components/TasksList.vue";
 export default {
-  data(){
-    return{
-      tasks: []
-    }
+  components: {
+    TaskForm,
+    TasksList,
   },
-  mounted(){
-    this.loadTasks()
-  },
-  methods:{
-    async loadTasks (){
-      const tasks = await fetch('http://localhost:3000/api/v1/tasks',{
-        mode: 'no-cors'
-      })
-      debugger
-       this.tasks = tasks
-    }
-  }
-
-}
+};
 </script>
 
 <style>
-
 </style>

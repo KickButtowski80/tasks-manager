@@ -1,0 +1,25 @@
+<template>
+      <form class="task-form">
+      <h4>task manager</h4>
+      <div class="form-control">
+        <input
+          type="text"
+          name="name"
+          class="task-input"
+          placeholder="e.g. wash dishes"
+        />
+        <button type="submit" class="btn submit-btn">submit</button>
+      </div>
+      <div class="form-alert"></div>
+    </form>
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style>
+
+</style>

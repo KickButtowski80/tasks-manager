@@ -8,11 +8,15 @@ dotenv.config();
 
 const connectDB = require('./db/connect')
 const port = 3000;
-const serveStatic = require('serve-static');
-app.use(express.static('client/public'))
+// const serveStatic = require('serve-static');
+// app.use(express.static('client/public'))
 // app.use(serveStatic(__dirname + "./public"));
+const cors = require("cors");
+
+// app.options("*", cors({ origin: 'http://localhost:3000', optionsSuccessStatus: 200 }));
 
 
+app.use(cors())
 app.use(express.json())
 
 
