@@ -3,7 +3,7 @@
     <p class="loading-text">Loading...</p>
 
     <div class="tasks" v-for="task in tasks" :key="task.id">
-      <task-item :task="task"></task-item>
+      <task-item :task="task" v-on:sent-deleted-id="receivedDelID"></task-item>
     </div>
   </section>
 </template>
@@ -33,6 +33,9 @@ export default {
 
       const temp = await tasks.json();
       this.tasks = temp.tasks;
+    },
+    receivedDelID(deletedId) {
+      this.tasks = this.tasks.filter((t) => t._id !== deletedId);
     },
   },
 };

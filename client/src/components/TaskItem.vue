@@ -5,12 +5,12 @@
       {{ task.name }}
     </h5>
     <div class="task-links">
-      <router-link to="google.com" class="edit-link">
+      <!-- <router-link to="google.com" class="edit-link">
         <i class="fas fa-edit"></i>
-      </router-link>
-      <!-- <a href="" class="edit-link">
-            <i class="fas fa-edit"></i>
-          </a> -->
+      </router-link> -->
+      <a href="" class="edit-link">
+        <i class="fas fa-edit"></i>
+      </a>
       <button type="button" class="delete-btn" @click="deleteTask()">
         <i class="fas fa-trash"></i>
       </button>
@@ -25,8 +25,15 @@ export default {
     return {};
   },
   methods: {
-    deleteTask() {
+    async deleteTask() {
       console.dir(this.task);
+      await fetch("http://localhost:3000/api/v1/tasks/" + this.task._id, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+      this.$emit('sent-deleted-id', this.task._id)
     },
   },
 };
