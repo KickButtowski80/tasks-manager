@@ -15,15 +15,37 @@ export default {
   components: {
     TaskItem,
   },
+  props: ["task"],
   data() {
     return {
       tasks: [],
+      fetchTaskId: 0,
     };
   },
   mounted() {
     this.loadTasks();
   },
+  watch: {
+    task(newVal, oldVal) {
+      this.addTask();
+    },
+  },
   methods: {
+    async addTask() {
+      const response = await fetch("http://localhost:3000/api/v1/tasks/", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          name: this.task.name,
+          completed: this.task.completed,
+        }),
+      });
+      const addedTask = await response.json();
+      this.fetchTaskId = addedTask.task._id;
+      this.tasks.unshift({ _id: this.fetchTaskId, ...this.task });
+    },
     async loadTasks() {
       const tasks = await fetch("http://localhost:3000/api/v1/tasks/", {
         headers: {

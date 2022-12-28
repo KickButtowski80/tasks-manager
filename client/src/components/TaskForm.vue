@@ -9,7 +9,9 @@
         placeholder="e.g. wash dishes"
         v-model="taskName"
       />
-      <button type="submit" class="btn submit-btn" @click.prevent="addTask">submit</button>
+      <button type="submit" class="btn submit-btn" @click.prevent="addTask">
+        submit
+      </button>
     </div>
     <div class="form-alert"></div>
   </form>
@@ -17,20 +19,20 @@
 
 <script>
 export default {
+  emits: ['send-task'],
   data() {
     return {
       taskName: "",
     };
   },
   methods: {
-    async addTask() {
-      await fetch("http://localhost:3000/api/v1/tasks/", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(this.taskName),
-      });
+    addTask() {
+      const task = {
+        name: this.taskName,
+        completed: false,
+      };
+     
+      this.$emit("send-task", task);
     },
   },
 };

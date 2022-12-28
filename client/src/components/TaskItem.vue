@@ -26,7 +26,6 @@ export default {
   },
   methods: {
     async deleteTask() {
-      console.dir(this.task);
       await fetch("http://localhost:3000/api/v1/tasks/" + this.task._id, {
         method: "DELETE",
         headers: {

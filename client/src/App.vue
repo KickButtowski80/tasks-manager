@@ -1,7 +1,7 @@
 <template>
   <div>
-    <task-form></task-form>
-    <tasks-list></tasks-list>
+    <task-form v-on:send-task="gotTask"></task-form>
+    <tasks-list :task="sendTask"></tasks-list>
   </div>
 </template>
 
@@ -12,6 +12,16 @@ export default {
   components: {
     TaskForm,
     TasksList,
+  },
+  data() {
+    return {
+      sendTask: {},
+    };
+  },
+  methods: {
+    gotTask(task) { 
+      this.sendTask = task
+    },
   },
 };
 </script>
