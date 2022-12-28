@@ -3,7 +3,11 @@
     <p class="loading-text">Loading...</p>
 
     <div class="tasks" v-for="task in tasks" :key="task.id">
-      <task-item :task="task" v-on:sent-deleted-id="receivedDelID"></task-item>
+      <task-item
+        :task="task"
+        v-on:sent-deleted-id="receivedDelID"
+        v-on:edited-task="editedTask"
+      ></task-item>
     </div>
   </section>
 </template>
@@ -58,6 +62,19 @@ export default {
     },
     receivedDelID(deletedId) {
       this.tasks = this.tasks.filter((t) => t._id !== deletedId);
+    },
+    async editedTask(task) {
+      const response = await fetch(
+        "http://localhost:3000/api/v1/tasks/" + task._id,
+        {
+          method: "PATCH",
+          body: JSON.stringify(task),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        }
+      );
+      console.log("patching reponse is", await response.json());
     },
   },
 };
