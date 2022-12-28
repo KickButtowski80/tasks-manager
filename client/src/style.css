@@ -386,13 +386,13 @@ form > :last-child {
   gap: 0 0.5rem;
 }
 .delete-btn,
-.edit-link {
+.edit-btn {
   background: transparent;
   font-size: 0.75rem;
   border: transparent;
   cursor: pointer;
 }
-.edit-link {
+.edit-btb {
   color: var(--green-dark);
 }
 .delete-btn {
