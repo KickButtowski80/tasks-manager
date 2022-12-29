@@ -1,21 +1,21 @@
 <template>
-  <div class="single-task" :class="{ 'task-completed': task.completed }">
+  <div class="single-task" :class="{ 'task-completed': task.completed, 'task-editing': editing }">
     <h5>
       <span style="display: none" ref="completedStatusIcons">
         <i
           style="margin-left: -13px"
-          class="far"
-          :class="{ 'fa-check-circle': task.completed }"
-          @click="lineOrNoLine"
+          class="far check-icon"
+          :class="{ 'fa-check-circle': task.completed, 'fa-circle': !task.completed }"
+          @click="task.completed = !task.completed"
         ></i>
-        <i
+        <!-- <i
           style="margin-left: -2px; font-size: 16px"
           class="far"
           :class="{ 'fa-circle': !task.completed }"
           @click="lineOrNoLine"
-        ></i>
+        ></i> -->
       </span>
-      <span ref="taskTitle" style="display: inline">{{ task.name }}</span>
+      <span ref="taskTitle" class="task-title" :content-editable="editing" style="display: inline">{{ task.name }}</span>
     </h5>
     <div class="task-btns" ref="btns">
       <button type="button" class="edit-btn" @click="editTask">
@@ -41,11 +41,13 @@ export default {
   emits:['edited-task'],
   props: ["task"],
   data() {
-    return {};
+    return {
+      editing: false,
+    };
   },
   methods: {
     async deleteTask() {
-      await fetch("http://localhost:3000/api/v1/tasks/" + this.task._id, {
+      await fetch(`${import.meta.env.VITE_SERVER_HOST}/api/v1/tasks/` + this.task._id, {
         method: "DELETE",
         headers: {
           "Content-type": "application/json",
@@ -74,22 +76,35 @@ export default {
       this.$refs.editBtns.style.display = "none";
       this.$refs.completedStatusIcons.style.display = "none";
     },
-    lineOrNoLine() {
-      this.$refs.taskTitle.contentEditable = false;
-      if (this.$refs.taskTitle.style.textDecoration === "none") {
-        this.$refs.taskTitle.style.textDecoration = "line-through";
-        this.task.completed = true;
-      } else {
-        this.$refs.taskTitle.style.textDecoration = "none";
-        this.task.completed = false;
-      }
-      this.$refs.taskTitle.contentEditable = true;
-    },
+    // lineOrNoLine() {
+    //   this.$refs.taskTitle.contentEditable = false;
+    //   if (this.$refs.taskTitle.style.textDecoration === "none") {
+    //     this.$refs.taskTitle.style.textDecoration = "line-through";
+    //     this.task.completed = true;
+    //   } else {
+    //     this.$refs.taskTitle.style.textDecoration = "none";
+    //     this.task.completed = false;
+    //   }
+    //   this.$refs.taskTitle.contentEditable = true;
+    // },
   },
 };
 </script>
 
 <style scoped>
+.task-title {
+  text-decoration: none;
+}
+.task-completed .task-title {
+  text-decoration: line-through;
+}
+.check-icon {
+  margin-left: -2px; 
+  font-size: 16px
+}
+.task-completed .check-icon {
+margin-left: -13px;
+}
 .edit-btns {
   display: none;
 }
