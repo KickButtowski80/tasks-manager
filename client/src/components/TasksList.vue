@@ -7,6 +7,7 @@
         :task="task"
         v-on:sent-deleted-id="receivedDelID"
         v-on:edited-task="editedTask"
+        v-on:no-edited-task="noEditedTask"
       ></task-item>
     </div>
   </section>
@@ -75,6 +76,9 @@ export default {
         }
       );
       console.log("patching reponse is", await response.json());
+    },
+    noEditedTask(event) {
+      console.log("no edited task", event);
     },
   },
 };

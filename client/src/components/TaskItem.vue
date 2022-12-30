@@ -4,16 +4,13 @@
       <span style="display: none" ref="completedStatusIcons">
         <i
           style="margin-left: -13px"
-          class="far check-icon"
-          :class="{ 'fa-check-circle': task.completed, 'fa-circle': !task.completed }"
-          @click="task.completed = !task.completed"
-        ></i>
-        <!-- <i
-          style="margin-left: -2px; font-size: 16px"
           class="far"
-          :class="{ 'fa-circle': !task.completed }"
+          :class="{
+            'fa-check-circle': task.completed,
+            'fa-circle': !task.completed,
+          }"
           @click="lineOrNoLine"
-        ></i> -->
+        ></i>
       </span>
       <span ref="taskTitle" class="task-title" :content-editable="editing" style="display: inline">{{ task.name }}</span>
     </h5>
@@ -38,13 +35,21 @@
 
 <script>
 export default {
-  emits:['edited-task'],
+  emits: ["edited-task", "no-edited-task"],
   props: ["task"],
   data() {
+    this.originalTask = { ...this.task };
+    this.completedStatus = undefined;
     return {
-      editing: false,
+      isEditing: false,
     };
   },
+  computed: {
+    originalTaskComplStatus() {
+      return this.originalTask.completed ? "line-through" : "none";
+    },
+  },
+
   methods: {
     async deleteTask() {
       await fetch(`${import.meta.env.VITE_SERVER_HOST}/api/v1/tasks/` + this.task._id, {
@@ -57,17 +62,24 @@ export default {
     },
     editTask() {
       this.$refs.taskTitle.contentEditable = true;
+      // this.$refs.completedStatusIcons.focus();
       this.$refs.taskTitle.focus();
+      this.isEditing = true;
+
       this.$refs.btns.style.display = "none";
       this.$refs.editBtns.style.display = "inline";
       this.$refs.completedStatusIcons.style.display = "inline";
     },
     acceptEdit() {
       this.task.name = this.$refs.taskTitle.innerText;
-      this.$emit('edited-task', this.task)
+      this.$emit("edited-task", this.task);
       this.guiProccess();
     },
     cancelEdit() {
+      this.$refs.taskTitle.innerText = this.originalTask.name;
+      this.$refs.taskTitle.style.textDecorationLine = this.originalTaskComplStatus;
+      this.$emit("no-edited-task", this.originalTask);
+
       this.guiProccess();
     },
     guiProccess() {
@@ -75,18 +87,18 @@ export default {
       this.$refs.btns.style.display = "inline";
       this.$refs.editBtns.style.display = "none";
       this.$refs.completedStatusIcons.style.display = "none";
+      this.isEditing = false;
     },
-    // lineOrNoLine() {
-    //   this.$refs.taskTitle.contentEditable = false;
-    //   if (this.$refs.taskTitle.style.textDecoration === "none") {
-    //     this.$refs.taskTitle.style.textDecoration = "line-through";
-    //     this.task.completed = true;
-    //   } else {
-    //     this.$refs.taskTitle.style.textDecoration = "none";
-    //     this.task.completed = false;
-    //   }
-    //   this.$refs.taskTitle.contentEditable = true;
-    // },
+    lineOrNoLine() {
+      this.$refs.taskTitle.contentEditable = false;
+      this.task.completed = !this.task.completed;
+      if (!this.task.completed) {
+        this.$refs.taskTitle.style.textDecoration = "none";
+      } else {
+        this.$refs.taskTitle.style.textDecoration = "line-through";
+      }
+      this.$refs.taskTitle.contentEditable = true;
+    },
   },
 };
 </script>
