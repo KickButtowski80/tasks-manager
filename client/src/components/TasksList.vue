@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     async addTask() {
-      const response = await fetch("http://localhost:3000/api/v1/tasks/", {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_HOST}/api/v1/tasks/`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -52,7 +52,7 @@ export default {
       this.tasks.unshift({ _id: this.fetchTaskId, ...this.task });
     },
     async loadTasks() {
-      const tasks = await fetch("http://localhost:3000/api/v1/tasks/", {
+      const tasks = await fetch(`${import.meta.env.VITE_SERVER_HOST}api/v1/tasks/`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -66,7 +66,7 @@ export default {
     },
     async editedTask(task) {
       const response = await fetch(
-        "http://localhost:3000/api/v1/tasks/" + task._id,
+        `${import.meta.env.VITE_SERVER_HOST}/api/v1/tasks/` + task._id,
         {
           method: "PATCH",
           body: JSON.stringify(task),
