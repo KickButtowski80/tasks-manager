@@ -1,7 +1,7 @@
 <template>
-  <div class="single-task" :class="{ 'task-completed': task.completed, 'task-editing': editing }">
+  <div class="single-task" :class="{ 'task-completed': task.completed, 'task-editing': isEditing }">
     <h5>
-      <span style="display: none" ref="completedStatusIcons">
+      <span class="status-icon" ref="completedStatusIcons">
         <i
           style="margin-left: -13px"
           class="far"
@@ -9,20 +9,20 @@
             'fa-check-circle': task.completed,
             'fa-circle': !task.completed,
           }"
-          @click="lineOrNoLine"
+          @click="task.completed=!task.completed"
         ></i>
       </span>
-      <span ref="taskTitle" class="task-title" :content-editable="editing" style="display: inline">{{ task.name }}</span>
+      <span ref="taskTitle" class="task-title">{{ task.name }}</span>
     </h5>
     <div class="task-btns" ref="btns">
-      <button type="button" class="edit-btn" @click="editTask">
+      <button type="button" class="edit-btn" @click="isEditing = true">
         <i class="fas fa-edit"></i>
       </button>
       <button type="button" class="delete-btn" @click="deleteTask">
         <i class="fas fa-trash"></i>
       </button>
     </div>
-    <div class="edit-btns task-btns" ref="editBtns">
+    <div class="edit-btns" ref="editBtns">
       <button type="button" @click="acceptEdit">
         <i class="fa fa-check"></i>
       </button>
@@ -35,21 +35,19 @@
 
 <script>
 export default {
-  emits: ["edited-task", "no-edited-task"],
   props: ["task"],
   data() {
-    this.originalTask = { ...this.task };
-    this.completedStatus = undefined;
     return {
       isEditing: false,
+      originalTask: {...this.task},
     };
   },
-  computed: {
-    originalTaskComplStatus() {
-      return this.originalTask.completed ? "line-through" : "none";
+  watch: {
+    isEditing(val) {
+      this.$refs.taskTitle.contentEditable = val;  // this needs to be here so we can focus AFTER setting content editable
+      if (val) this.$refs.taskTitle.focus();
     },
   },
-
   methods: {
     async deleteTask() {
       await fetch(`${import.meta.env.VITE_SERVER_HOST}/api/v1/tasks/` + this.task._id, {
@@ -60,52 +58,34 @@ export default {
       });
       this.$emit("sent-deleted-id", this.task._id);
     },
-    editTask() {
-      this.$refs.taskTitle.contentEditable = true;
-      // this.$refs.completedStatusIcons.focus();
-      this.$refs.taskTitle.focus();
-      this.isEditing = true;
-
-      this.$refs.btns.style.display = "none";
-      this.$refs.editBtns.style.display = "inline";
-      this.$refs.completedStatusIcons.style.display = "inline";
-    },
     acceptEdit() {
-      this.task.name = this.$refs.taskTitle.innerText;
-      this.$emit("edited-task", this.task);
-      this.guiProccess();
-    },
-    cancelEdit() {
-      this.$refs.taskTitle.innerText = this.originalTask.name;
-      this.$refs.taskTitle.style.textDecorationLine = this.originalTaskComplStatus;
-      this.$emit("no-edited-task", this.originalTask);
-
-      this.guiProccess();
-    },
-    guiProccess() {
-      this.$refs.taskTitle.contentEditable = false;
-      this.$refs.btns.style.display = "inline";
-      this.$refs.editBtns.style.display = "none";
-      this.$refs.completedStatusIcons.style.display = "none";
+      this.task.name = this.$refs.taskTitle.innerText;  // WARNING: editing a prop
       this.isEditing = false;
     },
-    lineOrNoLine() {
-      this.$refs.taskTitle.contentEditable = false;
-      this.task.completed = !this.task.completed;
-      if (!this.task.completed) {
-        this.$refs.taskTitle.style.textDecoration = "none";
-      } else {
-        this.$refs.taskTitle.style.textDecoration = "line-through";
-      }
-      this.$refs.taskTitle.contentEditable = true;
+    cancelEdit() {
+      this.isEditing = false;
+      this.$refs.taskTitle.innerText = this.originalTask.name;
+      this.task.name = this.originalTask.name;
+      this.task.completed = this.originalTask.completed;
     },
   },
 };
 </script>
 
 <style scoped>
+.status-icon {
+  display: none
+}
+.task-editing .edit-btns, 
+.task-editing .status-icon {
+  display: inline;
+}
+.task-editing .task-btns {
+  display: none;
+}
 .task-title {
   text-decoration: none;
+  display: inline;
 }
 .task-completed .task-title {
   text-decoration: line-through;
