@@ -1,7 +1,13 @@
 <template>
-  <div class="single-task" :class="{ 'task-completed': task.completed }">
+  <div
+    class="single-task"
+    :class="{
+      'task-completed': task.completed,
+      'task-editing': isEditing,
+    }"
+  >
     <h5>
-      <span style="display: none" ref="completedStatusIcons">
+      <span class="icon-status" ref="completedStatusIcons">
         <i
           style="margin-left: -13px"
           class="far"
@@ -9,10 +15,10 @@
             'fa-check-circle': task.completed,
             'fa-circle': !task.completed,
           }"
-          @click="lineOrNoLine"
+          @click="task.completed = !task.completed"
         ></i>
       </span>
-      <span ref="taskTitle" style="display: inline">{{ task.name }}</span>
+      <span ref="taskTitle" class="task-title">{{ task.name }}</span>
     </h5>
     <div class="task-btns" ref="btns">
       <button type="button" class="edit-btn" @click="editTask">
@@ -22,7 +28,7 @@
         <i class="fas fa-trash"></i>
       </button>
     </div>
-    <div class="edit-btns task-btns" ref="editBtns">
+    <div class="edit-btns" ref="editBtns">
       <button type="button" @click="acceptEdit">
         <i class="fa fa-check"></i>
       </button>
@@ -35,21 +41,14 @@
 
 <script>
 export default {
-  emits: ["edited-task", "no-edited-task"],
+  emits: ["no-edited-task","edited-task","sent-deleted-id"],
   props: ["task"],
   data() {
-    this.originalTask = { ...this.task };
-    this.completedStatus = undefined;
     return {
+      originalTask: { ...this.task },
       isEditing: false,
     };
   },
-  computed: {
-    originalTaskComplStatus() {
-      return this.originalTask.completed ? "line-through" : "none";
-    },
-  },
-
   methods: {
     async deleteTask() {
       await fetch("http://localhost:3000/api/v1/tasks/" + this.task._id, {
@@ -62,48 +61,62 @@ export default {
     },
     editTask() {
       this.$refs.taskTitle.contentEditable = true;
-      // this.$refs.completedStatusIcons.focus();
-      this.$refs.taskTitle.focus();
+      // // this.$refs.completedStatusIcons.focus();
+      // this.$refs.taskTitle.focus();
       this.isEditing = true;
-
-      this.$refs.btns.style.display = "none";
-      this.$refs.editBtns.style.display = "inline";
-      this.$refs.completedStatusIcons.style.display = "inline";
     },
     acceptEdit() {
       this.task.name = this.$refs.taskTitle.innerText;
       this.$emit("edited-task", this.task);
-      this.guiProccess();
+
+      this.isEditing = false;
+      this.$refs.taskTitle.contentEditable = true;
     },
     cancelEdit() {
       this.$refs.taskTitle.innerText = this.originalTask.name;
-      this.$refs.taskTitle.style.textDecorationLine = this.originalTaskComplStatus;
+      this.task.completed = this.originalTask.completed;
+      // this.task.name = this.originalTask.name
       this.$emit("no-edited-task", this.originalTask);
 
-      this.guiProccess();
-    },
-    guiProccess() {
-      this.$refs.taskTitle.contentEditable = false;
-      this.$refs.btns.style.display = "inline";
-      this.$refs.editBtns.style.display = "none";
-      this.$refs.completedStatusIcons.style.display = "none";
-      this.isEditing = false;
-    },
-    lineOrNoLine() {
-      this.$refs.taskTitle.contentEditable = false;
-      this.task.completed = !this.task.completed;
-      if (!this.task.completed) {
-        this.$refs.taskTitle.style.textDecoration = "none";
-      } else {
-        this.$refs.taskTitle.style.textDecoration = "line-through";
-      }
       this.$refs.taskTitle.contentEditable = true;
+      this.isEditing = false;
     },
   },
 };
 </script>
 
 <style scoped>
+.task-editing {
+  display: flex;
+}
+
+.task-btns {
+  display: flex;
+  align-items: center;
+  gap: 0 0.5rem;
+}
+
+.icon-status {
+  display: none;
+}
+.task-editing .icon-status {
+  display: inline;
+}
+.task-editing .task-btns {
+  display: none;
+}
+.task-editing .edit-btns {
+  display: inline;
+}
+
+.task-title {
+  display: inline;
+}
+
+.task-editing:focus {
+  background: rgb(200, 52, 52);
+}
+
 .edit-btns {
   display: none;
 }
