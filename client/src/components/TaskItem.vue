@@ -94,7 +94,7 @@ export default {
   display: flex;
 }
 .task-editing .focusTask {
-  outline: 8px ridge rgba(74, 93, 201, 0.6);
+  outline: 6px solid #645cff;
   border-radius: 1rem;
   background: rgb(223, 223, 234);
 }
