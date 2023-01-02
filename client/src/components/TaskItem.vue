@@ -86,20 +86,6 @@ export default {
 </script>
 
 <style scoped>
-/* @keyframes cursor-blink {
-  0% {
-    opacity: 0;
-  }
-}
-
-.task-editing  h5::before {
-  content: "";
-  width: 5px;
-  height: 20px;
-  background: #989699;
-  display: inline-block;
-  animation: cursor-blink 1.5s steps(2) infinite;
-} */
 
 [contenteditable] {
   outline: 0px solid transparent;
