@@ -1,7 +1,11 @@
 <template>
   <section class="tasks-container">
-    <p class="loading-text">Loading...</p>
-
+    <div class="loader-parent">
+      <div :class="{ 'lds-ripple': isLoading }">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
     <div class="tasks" v-for="task in tasks" :key="task.id">
       <task-item
         :task="task"
@@ -25,9 +29,11 @@ export default {
     return {
       tasks: [],
       fetchTaskId: 0,
+      isLoading: false,
     };
   },
   mounted() {
+    this.isLoading = true;
     this.loadTasks();
   },
   watch: {
@@ -60,6 +66,7 @@ export default {
 
       const temp = await tasks.json();
       this.tasks = temp.tasks;
+      this.isLoading = false;
     },
     receivedDelID(deletedId) {
       this.tasks = this.tasks.filter((t) => t._id !== deletedId);
@@ -84,5 +91,59 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.loader-parent {
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+  display: -webkit-box;
+}
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 300px;
+  height: 300px;
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+  display: -webkit-box;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid rgb(50, 75, 149);
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  4.9% {
+    top: 36px;
+    left: 36px;
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+  }
+  5% {
+    top: 36px;
+    left: 36px;
+    width: 200px;
+    height: 200px;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
 </style>
