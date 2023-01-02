@@ -13,30 +13,44 @@
         submit
       </button>
     </div>
-    <div class="form-alert"></div>
+    <div class="form-alert">
+      {{postValidationMsg}}
+    </div>
   </form>
 </template>
 
 <script>
 export default {
-  emits: ['send-task'],
+  props: ['postValidationMsg'],
+  emits: ["send-task"],
   data() {
     return {
       taskName: "",
+      validationMsg: "",
     };
   },
   methods: {
+    errorMessage(){
+      this.validationMsg = this.postErrorMsg
+    },
     addTask() {
       const task = {
         name: this.taskName,
         completed: false,
       };
-     
+
       this.$emit("send-task", task);
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
+.form-alert {
+  display: block;
+}
+
+.form-alert .text-success {
+  color: var(--green-dark);
+}
 </style>

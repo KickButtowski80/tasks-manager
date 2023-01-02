@@ -30,6 +30,7 @@ export default {
       tasks: [],
       fetchTaskId: 0,
       isLoading: false,
+      validationMsg: "xxxxx",
     };
   },
   mounted() {
@@ -43,19 +44,30 @@ export default {
   },
   methods: {
     async addTask() {
-      const response = await fetch("http://localhost:3000/api/v1/tasks/", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          name: this.task.name,
-          completed: this.task.completed,
-        }),
-      });
-      const addedTask = await response.json();
-      this.fetchTaskId = addedTask.task._id;
-      this.tasks.unshift({ _id: this.fetchTaskId, ...this.task });
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/tasks/", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            name: this.task.name,
+            completed: this.task.completed,
+          }),
+        });
+        const addedTask = await response.json();
+      
+        if (Object.keys(addedTask.msg).includes("errors")) {
+          this.validationMsg = addedTask.msg.errors.name.message;
+         
+          this.$emit('post-validation-msg', this.validationMsg)
+          return;
+        }
+        this.fetchTaskId = addedTask.task._id;
+        this.tasks.unshift({ _id: this.fetchTaskId, ...this.task });
+      } catch (error) {
+        console.log("post task error is ", error);
+      }
     },
     async loadTasks() {
       const tasks = await fetch("http://localhost:3000/api/v1/tasks/", {

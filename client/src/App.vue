@@ -1,7 +1,10 @@
 <template>
   <div>
-    <task-form v-on:send-task="gotTask"></task-form>
-    <tasks-list :task="sendTask"></tasks-list>
+    <task-form v-on:send-task="gotTask" :postValidationMsg="postVM"></task-form>
+    <tasks-list 
+    :task="sendTask"
+    v-on:post-validation-msg="postValiMsg"
+    ></tasks-list>
   </div>
 </template>
 
@@ -15,6 +18,7 @@ export default {
   },
   data() {
     return {
+      postVM:'',
       sendTask: {},
     };
   },
@@ -22,6 +26,10 @@ export default {
     gotTask(task) { 
       this.sendTask = task
     },
+    postValiMsg(VMsg){
+      debugger;
+      this.postVM = VMsg;
+    }
   },
 };
 </script>
