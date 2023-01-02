@@ -342,7 +342,7 @@ form > :last-child {
   
 }
 .single-task {
-  padding: 1rem 2.5rem;
+  padding: 1rem 1rem;
   background: var(--white);
   border-radius: var(--borderRadius);
   box-shadow: var(--shadow-2);
@@ -362,8 +362,8 @@ form > :last-child {
   display: inline-block;
   width: 0.5rem;
   height: 0.5rem;
-  margin-left: -1.25rem;
-  margin-right: 1.5rem;
+  margin-left: 0.75rem;
+  /* margin-right: 1.5rem; */
 }
 .task-editing .fa-check-circle, 
 .task-editing .fa-circle {
