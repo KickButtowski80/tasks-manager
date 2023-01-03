@@ -93,8 +93,8 @@ export default {
       const { _id, name } = deletedTask;
       const id = this.tasks.findIndex((t) => t._id === _id);
       this.tasks = this.tasks.filter((t) => t._id !== _id);
-      this.tasks.splice(id, 0, { _id: "abc", name: ` ${name} was deleted` });
-      this.isDeleted = false;
+      this.tasks.splice(id, 0, { _id: "abc", name: `${name} was deleted` });
+
       setTimeout(() => {
         this.tasks = this.tasks.filter((t) => t._id !== "abc");
       }, 2000);
