@@ -21,7 +21,7 @@
           'show-off-text': isShowOff
         }"
       >
-        <span :class="{ 'text-underLine': !isError }">
+        <span :class="{ 'text-underline': !isError }">
           {{ taskNameMg }}
         </span>
         {{ restMg }}
@@ -82,7 +82,7 @@ export default {
   color: var(--green-dark);
 }
 
-.show-off-text .text-underLine {
+.show-off-text .text-underline {
   text-decoration: underline;
   outline: 6px solid #645cff;
   border-radius: 1rem;
