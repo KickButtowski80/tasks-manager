@@ -14,25 +14,41 @@
       </button>
     </div>
     <div class="form-alert">
-      {{postValidationMsg}}
+      <span
+        :class="{
+          'text-danger': isError,
+          'text-success': !isError,
+        }"
+      >
+        {{ pvmg }}
+      </span>
     </div>
   </form>
 </template>
 
 <script>
 export default {
-  props: ['postValidationMsg'],
+  props: ["postValidationMsg"],
   emits: ["send-task"],
   data() {
     return {
       taskName: "",
       validationMsg: "",
+      pvmg: this.postValidationMsg,
+      isError: false,
     };
   },
-  methods: {
-    errorMessage(){
-      this.validationMsg = this.postErrorMsg
+  watch: {
+    postValidationMsg(n, o) {
+      const { msg, status} = n
+      this.pvmg = msg;
+      this.isError = status === 'error' ? true : false
+      setTimeout(() => {
+        this.pvmg = "";
+      }, 3000);
     },
+  },
+  methods: {
     addTask() {
       const task = {
         name: this.taskName,

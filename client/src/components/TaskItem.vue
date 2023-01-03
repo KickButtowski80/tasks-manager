@@ -62,7 +62,6 @@ export default {
     editTask() {
       this.isEditing = true;
       this.$refs.taskTitle.contentEditable = true;
-      // // this.$refs.completedStatusIcons.focus();
       this.$refs.taskTitle.focus();
     },
     acceptEdit() {
