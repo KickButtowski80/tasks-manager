@@ -54,7 +54,7 @@ export default {
         name: this.taskName,
         completed: false,
       };
-
+      this.taskName = '';
       this.$emit("send-task", task);
     },
   },
