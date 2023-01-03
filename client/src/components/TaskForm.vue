@@ -18,9 +18,13 @@
         :class="{
           'text-danger': isError,
           'text-success': !isError,
+          'show-off-text': isShowOff
         }"
       >
-        {{ pvmg }}
+        <span :class="{ 'text-underLine': !isError }">
+          {{ taskNameMg }}
+        </span>
+        {{ restMg }}
       </span>
     </div>
   </form>
@@ -36,16 +40,24 @@ export default {
       validationMsg: "",
       pvmg: this.postValidationMsg,
       isError: false,
+      isShowOff: false,
+      taskNameMg: "",
+      restMg: "",
     };
   },
   watch: {
     postValidationMsg(n, o) {
-      const { msg, status} = n
-      this.pvmg = msg;
-      this.isError = status === 'error' ? true : false
+      const { msg, status } = n;
+      this.taskNameMg = msg.match(/^.*(?=(\ was)) /g)[0];
+      this.restMg = msg.split(this.taskNameMg)[1];
+      this.isError = status === "error" ? true : false;
+      this.isShowOff = true;
       setTimeout(() => {
-        this.pvmg = "";
+        this.taskNameMg = "";
+        this.restMg = "";
+        this.isShowOff = false;
       }, 3000);
+    
     },
   },
   methods: {
@@ -54,7 +66,7 @@ export default {
         name: this.taskName,
         completed: false,
       };
-      this.taskName = '';
+      this.taskName = "";
       this.$emit("send-task", task);
     },
   },
@@ -68,5 +80,14 @@ export default {
 
 .form-alert .text-success {
   color: var(--green-dark);
+}
+
+.show-off-text .text-underLine {
+  text-decoration: underline;
+  outline: 6px solid #645cff;
+  border-radius: 1rem;
+  background: rgb(223, 223, 234);
+  padding: 5px;
+  margin-right: 7px;
 }
 </style>

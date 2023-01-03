@@ -70,7 +70,7 @@ export default {
           this.fetchTaskId = addedTask.task._id;
           this.tasks.unshift({ _id: this.fetchTaskId, ...this.task });
           this.$emit("post-validation-msg", {
-            msg: "newTask was added successfully!",
+            msg: `${this.task.name} was added successfully!`,
             status: "success",
           });
         }
