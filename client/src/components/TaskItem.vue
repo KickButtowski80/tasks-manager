@@ -1,52 +1,57 @@
 <template>
-  <div
-    class="single-task"
-    :class="{
-      'task-completed': task.completed,
-      'task-editing': isEditing,
-    }"
-  >
-    <h5 class="focusTask">
-      <span class="icon-status" ref="completedStatusIcons">
-        <i
-          style="margin-left: -13px"
-          class="far"
-          :class="{
-            'fa-check-circle': task.completed,
-            'fa-circle': !task.completed,
-          }"
-          @click="task.completed = !task.completed"
-        ></i>
-      </span>
-      <span ref="taskTitle" class="task-title">{{ task.name }}</span>
-    </h5>
-    <div class="task-btns" ref="btns">
-      <button type="button" class="edit-btn" @click="editTask">
-        <i class="fas fa-edit"></i>
-      </button>
-      <button type="button" class="delete-btn" @click="deleteTask">
-        <i class="fas fa-trash"></i>
-      </button>
-    </div>
-    <div class="edit-btns" ref="editBtns">
-      <button type="button" @click="acceptEdit">
-        <i class="fa fa-check"></i>
-      </button>
-      <button type="button" @click="cancelEdit">
-        <i class="fa fa-xmark"></i>
-      </button>
+  <div>
+    <div
+      class="single-task"
+      :class="{
+        'task-completed': task.completed,
+        'task-editing': isEditing,
+        'task-deleting': isDeleting,
+      }"
+    >
+      <h5 class="focusTask">
+        <span class="icon-status" ref="completedStatusIcons">
+          <i
+            style="margin-left: -13px"
+            class="far"
+            :class="{
+              'fa-check-circle': task.completed,
+              'fa-circle': !task.completed,
+            }"
+            @click="task.completed = !task.completed"
+          ></i>
+        </span>
+        <span ref="taskTitle" class="task-title">{{ task.name }}</span>
+      </h5>
+      <div class="task-btns" ref="btns">
+        <button type="button" class="edit-btn" @click="editTask">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button type="button" class="delete-btn" @click="deleteTask">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      <div class="edit-btns" ref="editBtns">
+        <button type="button" @click="acceptEdit">
+          <i class="fa fa-check"></i>
+        </button>
+        <button type="button" @click="cancelEdit">
+          <i class="fa fa-xmark"></i>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  emits: ["no-edited-task", "edited-task", "sent-deleted-id"],
+  emits: ["no-edited-task", "edited-task", "sent-deleted-task"],
   props: ["task"],
+
   data() {
     return {
       originalTask: { ...this.task },
       isEditing: false,
+      isDeleting: false,
     };
   },
   methods: {
@@ -57,7 +62,8 @@ export default {
           "Content-type": "application/json",
         },
       });
-      this.$emit("sent-deleted-id", this.task._id);
+      this.isDeleting = true
+      this.$emit("sent-deleted-task", this.task);
     },
     editTask() {
       this.isEditing = true;
@@ -85,7 +91,6 @@ export default {
 </script>
 
 <style scoped>
-
 [contenteditable] {
   outline: 0px solid transparent;
 }
@@ -110,7 +115,8 @@ export default {
 .task-editing .icon-status {
   display: inline;
 }
-.task-editing .task-btns {
+.task-editing .task-btns,
+.task-deleting .task-btns {
   display: none;
 }
 .task-editing .edit-btns {

@@ -9,7 +9,9 @@
     <div class="tasks" v-for="task in tasks" :key="task.id">
       <task-item
         :task="task"
-        v-on:sent-deleted-id="receivedDelID"
+        :isDelStatus="isDeleted"
+        v-on:sent-deleted-task="receivedDelT"
+        v-on:is-deleted-status="recivedDelStatus"
         v-on:edited-task="editedTask"
         v-on:no-edited-task="noEditedTask"
       ></task-item>
@@ -31,6 +33,7 @@ export default {
       fetchTaskId: 0,
       isLoading: false,
       validationMsg: "",
+      isDeleted: false,
     };
   },
   mounted() {
@@ -69,7 +72,7 @@ export default {
           this.fetchTaskId = addedTask.task._id;
           this.tasks.unshift({ _id: this.fetchTaskId, ...this.task });
           this.$emit("post-validation-msg", {
-            msg: "everthing was successful!",
+            msg: "newTask was added successfully!",
             status: "success",
           });
         }
@@ -88,8 +91,18 @@ export default {
       this.tasks = temp.tasks;
       this.isLoading = false;
     },
-    receivedDelID(deletedId) {
-      this.tasks = this.tasks.filter((t) => t._id !== deletedId);
+    receivedDelT(deletedTask) {
+      const { _id, name } = deletedTask;
+      const id = this.tasks.findIndex((t) => t._id === _id);
+      this.tasks = this.tasks.filter((t) => t._id !== _id);
+      this.tasks.splice(id, 0, { _id: "abc", name: ` ${name} was deleted` });
+      setTimeout(() => {
+        this.tasks = this.tasks.filter((t) => t._id !== "abc");
+      }, 2000);
+    },
+    recivedDelStatus(status) {
+      console.log("recieved del status", status);
+      this.isDeleted = !status;
     },
     async editedTask(task) {
       const response = await fetch(
