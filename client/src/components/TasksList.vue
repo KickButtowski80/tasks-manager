@@ -30,7 +30,7 @@ export default {
       tasks: [],
       fetchTaskId: 0,
       isLoading: false,
-      validationMsg: "xxxxx",
+      validationMsg: "",
     };
   },
   mounted() {
@@ -44,32 +44,38 @@ export default {
   },
   methods: {
     async addTask() {
-      // try {
-      const response = await fetch("http://localhost:3000/api/v1/tasks/", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          name: this.task.name,
-          completed: this.task.completed,
-        }),
-      });
-      const addedTask = await response.json();
-      if (addedTask) {
-        if (Object.keys(addedTask).includes("msg")) {
-          this.validationMsg = addedTask.msg.errors.name.message;
-          this.$emit("post-validation-msg", {'msg':this.validationMsg, 'status': 'error' });
-          return;
-        }
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/tasks/", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            name: this.task.name,
+            completed: this.task.completed,
+          }),
+        });
+        const addedTask = await response.json();
+        if (addedTask) {
+          if (Object.keys(addedTask).includes("msg")) {
+            this.validationMsg = addedTask.msg.errors.name.message;
+            this.$emit("post-validation-msg", {
+              msg: this.validationMsg,
+              status: "error",
+            });
+            return;
+          }
 
-        this.fetchTaskId = addedTask.task._id;
-        this.tasks.unshift({ _id: this.fetchTaskId, ...this.task });
-        this.$emit("post-validation-msg", {'msg':"everthing was successful!", 'status': 'success'});
+          this.fetchTaskId = addedTask.task._id;
+          this.tasks.unshift({ _id: this.fetchTaskId, ...this.task });
+          this.$emit("post-validation-msg", {
+            msg: "everthing was successful!",
+            status: "success",
+          });
+        }
+      } catch (error) {
+        console.log("post task error is ", error);
       }
-      // } catch (error) {
-      //   console.log("post task error is ", error);
-      // }
     },
     async loadTasks() {
       const tasks = await fetch("http://localhost:3000/api/v1/tasks/", {
