@@ -9,9 +9,7 @@
     <div class="tasks" v-for="task in tasks" :key="task.id">
       <task-item
         :task="task"
-        :isDelStatus="isDeleted"
         v-on:sent-deleted-task="receivedDelT"
-        v-on:is-deleted-status="recivedDelStatus"
         v-on:edited-task="editedTask"
         v-on:no-edited-task="noEditedTask"
       ></task-item>
@@ -96,13 +94,10 @@ export default {
       const id = this.tasks.findIndex((t) => t._id === _id);
       this.tasks = this.tasks.filter((t) => t._id !== _id);
       this.tasks.splice(id, 0, { _id: "abc", name: ` ${name} was deleted` });
+      this.isDeleted = false;
       setTimeout(() => {
         this.tasks = this.tasks.filter((t) => t._id !== "abc");
       }, 2000);
-    },
-    recivedDelStatus(status) {
-      console.log("recieved del status", status);
-      this.isDeleted = !status;
     },
     async editedTask(task) {
       const response = await fetch(

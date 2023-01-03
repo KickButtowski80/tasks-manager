@@ -62,8 +62,11 @@ export default {
           "Content-type": "application/json",
         },
       });
-      this.isDeleting = true
+      this.isDeleting = true;
       this.$emit("sent-deleted-task", this.task);
+      setTimeout(() => {
+        this.isDeleting = false;
+      }, 2000);
     },
     editTask() {
       this.isEditing = true;
