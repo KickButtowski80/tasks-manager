@@ -24,7 +24,7 @@
         <span :class="{ 'text-underline': !isError }">
           {{ taskNameMg }}
         </span>
-        {{ restMg }}
+        {{ validationMsg }}
       </span>
     </div>
   </form>
@@ -47,8 +47,9 @@ export default {
   },
   watch: {
     postValidationMsg(n, o) {
-      const { msg, status } = n;
-      this.taskNameMg = msg.match(/^.*(?=(\ was)) /g)[0];
+      const { msg, taskName, status } = n;
+
+      // this.taskNameMg = msg.match(/^.*(?=(\ was)) /g)[0];
       this.restMg = msg.split(this.taskNameMg)[1];
       this.isError = status === "error" ? true : false;
       this.isShowOff = true;
@@ -57,18 +58,54 @@ export default {
         this.restMg = "";
         this.isShowOff = false;
       }, 3000);
-    
+
     },
   },
   methods: {
-    addTask() {
-      const task = {
-        name: this.taskName,
-        completed: false,
-      };
-      this.taskName = "";
-      this.$emit("send-task", task);
+    async addTask() {
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/tasks/", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            name: this.taskName,
+            completed: false,
+          }),
+        });
+        const addedTask = await response.json();
+        if (addedTask) {
+          this.taskNameMg = this.taskName;
+          if (Object.keys(addedTask).includes("msg")) {
+            this.validationMsg = addedTask.msg.errors.name.message;
+            this.isError = true;
+            this.isShowOff = true;
+            setTimeout(() => {
+              this.taskNameMg = "";
+              this.validationMsg = "";
+              this.isShowOff = false;
+              this.isError = false;
+            }, 3000);
+            return;
+          }
+
+          this.$emit("send-task", addedTask.task);
+          // TODO: add case where you show success
+          this.validationMsg = "was added successfully!";
+          this.isShowOff = true;
+          setTimeout(() => {
+              this.taskNameMg = "";
+              this.validationMsg = "";
+              this.isShowOff = false;
+              this.isError = false;
+            }, 3000);
+        }
+      } catch (error) {
+        console.log("post task error is ", error);
+      }
     },
+
   },
 };
 </script>

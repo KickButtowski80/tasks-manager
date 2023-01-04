@@ -1,9 +1,9 @@
 <template>
   <div>
-    <task-form v-on:send-task="gotTask" 
+    <task-form v-on:send-task="gotTask"
     :postValidationMsg="postVM"
     ></task-form>
-    <tasks-list 
+    <tasks-list
     :task="sendTask"
     v-on:post-validation-msg="postValiMsg"
     ></tasks-list>
@@ -25,10 +25,10 @@ export default {
     };
   },
   methods: {
-    gotTask(task) { 
+    gotTask(task) {
       this.sendTask = task
     },
-    postValiMsg(VMsg){     
+    postValiMsg(VMsg){
       this.postVM = VMsg;
     },
   },
