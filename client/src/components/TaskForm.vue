@@ -45,22 +45,21 @@ export default {
       restMg: "",
     };
   },
-  watch: {
-    postValidationMsg(n, o) {
-      const { msg, taskName, status } = n;
+  // watch: {
+  //   postValidationMsg(n, o) {
+  //     const { msg, taskName, status } = n;
+  //     debugger;
+  //     this.restMg = msg.split(this.taskNameMg)[1];
+  //     this.isError = status === "error" ? true : false;
+  //     this.isShowOff = true;
+  //     setTimeout(() => {
+  //       this.taskNameMg = "";
+  //       this.restMg = "";
+  //       this.isShowOff = false;
+  //     }, 3000);
 
-      // this.taskNameMg = msg.match(/^.*(?=(\ was)) /g)[0];
-      this.restMg = msg.split(this.taskNameMg)[1];
-      this.isError = status === "error" ? true : false;
-      this.isShowOff = true;
-      setTimeout(() => {
-        this.taskNameMg = "";
-        this.restMg = "";
-        this.isShowOff = false;
-      }, 3000);
-
-    },
-  },
+  //   },
+  // },
   methods: {
     async addTask() {
       try {
