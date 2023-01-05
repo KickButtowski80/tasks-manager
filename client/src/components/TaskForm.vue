@@ -43,10 +43,10 @@ export default {
     };
   },
   watch: {
-    validationMsg(n, o) {
+    validationMsg1(n, o) {
       if (this.isError) {
         this.validationMsg = n;
-      } else if (!this.isError) { 
+      } else if (!this.isError) {
         this.isShowOff = true;
       }
       setTimeout(() => {
@@ -75,7 +75,8 @@ export default {
           if (Object.keys(addedTask).includes("msg")) {
             this.validationMsg = addedTask.msg.errors.name.message;
             this.isError = true;
-            this.taskName = "";
+
+            this.resetForm();
             return;
           }
           const addedJob = {
@@ -84,14 +85,24 @@ export default {
             completed: false,
           };
           this.$emit("added-task", addedJob);
+          this.isShowOff = true;
           this.isError = false;
           this.taskNameMsg = this.taskName;
           this.validationMsg = `was added successfully!`;
-          this.taskName = "";
+          this.resetForm();
         }
       } catch (error) {
         console.log("post task error is ", error);
       }
+    },
+    resetForm() {
+      setTimeout(() => {
+        this.taskName = "";
+        this.taskNameMsg = "";
+        this.validationMsg = "";
+        this.isError = true;
+        this.isShowOff = false;
+      }, 2500);
     },
   },
 };
