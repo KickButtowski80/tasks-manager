@@ -52,8 +52,9 @@ export default {
       setTimeout(() => {
         this.taskNameMsg = "";
         this.validationMsg = "";
+        this.isError = true;
         this.isShowOff = false;
-      }, 3000);
+      }, 2500);
     },
   },
   methods: {
@@ -83,9 +84,9 @@ export default {
             completed: false,
           };
           this.$emit("added-task", addedJob);
+          this.isError = false;
           this.taskNameMsg = this.taskName;
           this.validationMsg = `was added successfully!`;
-          this.isError = false;
           this.taskName = "";
         }
       } catch (error) {
