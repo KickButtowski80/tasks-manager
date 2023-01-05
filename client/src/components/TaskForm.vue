@@ -46,8 +46,7 @@ export default {
     validationMsg(n, o) {
       if (this.isError) {
         this.validationMsg = n;
-      } else if (!this.isError) {
-        // debugger;
+      } else if (!this.isError) { 
         this.isShowOff = true;
       }
       setTimeout(() => {
@@ -75,6 +74,7 @@ export default {
           if (Object.keys(addedTask).includes("msg")) {
             this.validationMsg = addedTask.msg.errors.name.message;
             this.isError = true;
+            this.taskName = "";
             return;
           }
           const addedJob = {
