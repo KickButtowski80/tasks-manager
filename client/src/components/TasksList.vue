@@ -60,11 +60,10 @@ export default {
     receivedDelT(deletedTask) {
       const { _id, name } = deletedTask;
       const id = this.tasks.findIndex((t) => t._id === _id);
-      this.tasks = this.tasks.filter((t) => t._id !== _id);
-      this.tasks.splice(id, 0, { _id: "abc", name: `${name} was deleted` });
+      this.tasks.splice(id, 1, { _deleted: true, name: `${name} was deleted` });
 
       setTimeout(() => {
-        this.tasks = this.tasks.filter((t) => t._id !== "abc");
+        this.tasks.splice(id, 1);
       }, 2000);
     },
     async editedTask(task) {
