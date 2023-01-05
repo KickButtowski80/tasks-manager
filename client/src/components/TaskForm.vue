@@ -14,7 +14,7 @@
       </button>
     </div>
     <div class="form-alert">
-      <span
+      <!-- <span
         :class="{
           'text-danger': isError,
           'text-success': !isError,
@@ -25,6 +25,16 @@
           {{ taskNameMg }}
         </span>
         {{ restMg }}
+      </span> -->
+
+      <span
+        :class="{
+          'text-danger': isError,
+          'text-success': !isError,
+          'show-off-text': isShowOff,
+        }"
+      >
+        {{ validationMsg }} -- {{ isError }}
       </span>
     </div>
   </form>
@@ -32,13 +42,11 @@
 
 <script>
 export default {
-  props: ["postValidationMsg"],
-  emits: ["send-task"],
+  emits: ["added-task"],
   data() {
     return {
       taskName: "",
       validationMsg: "",
-      pvmg: this.postValidationMsg,
       isError: false,
       isShowOff: false,
       taskNameMg: "",
@@ -57,17 +65,41 @@ export default {
         this.restMg = "";
         this.isShowOff = false;
       }, 3000);
-    
     },
   },
   methods: {
-    addTask() {
-      const task = {
-        name: this.taskName,
-        completed: false,
-      };
-      this.taskName = "";
-      this.$emit("send-task", task);
+    async addTask() {
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/tasks/", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            name: this.taskName,
+            completed: false,
+          }),
+        });
+        const addedTask = await response.json();
+        if (addedTask) {
+          if (Object.keys(addedTask).includes("msg")) {
+            this.validationMsg = addedTask.msg.errors.name.message;
+            this.isError = true;
+            return;
+          }
+          const addedJob = {
+            _id: addedTask.task._id,
+            name: this.taskName,
+            completed: false,
+          }
+          this.$emit("added-task", addedJob);
+          this.validationMsg = `${this.taskName} was added successfully!`;
+          this.isError = false;
+          this.taskName = "";
+        }
+      } catch (error) {
+        console.log("post task error is ", error);
+      }
     },
   },
 };
