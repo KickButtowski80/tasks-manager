@@ -28,9 +28,7 @@ export default {
   data() {
     return {
       tasks: [],
-      fetchTaskId: 0,
       isLoading: false,
-      validationMsg: "",
       isDeleted: false,
     };
   },
@@ -40,43 +38,13 @@ export default {
   },
   watch: {
     task(newVal, oldVal) {
+      // when the task props recieved, it can be added to tasks
       this.addTask();
     },
   },
   methods: {
-    async addTask() {
-      try {
-        const response = await fetch("http://localhost:3000/api/v1/tasks/", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            name: this.task.name,
-            completed: this.task.completed,
-          }),
-        });
-        const addedTask = await response.json();
-        if (addedTask) {
-          if (Object.keys(addedTask).includes("msg")) {
-            this.validationMsg = addedTask.msg.errors.name.message;
-            this.$emit("post-validation-msg", {
-              msg: this.validationMsg,
-              status: "error",
-            });
-            return;
-          }
-
-          this.fetchTaskId = addedTask.task._id;
-          this.tasks.unshift({ _id: this.fetchTaskId, ...this.task });
-          this.$emit("post-validation-msg", {
-            msg: `${this.task.name} was added successfully!`,
-            status: "success",
-          });
-        }
-      } catch (error) {
-        console.log("post task error is ", error);
-      }
+    addTask() {
+      this.tasks.unshift(this.task);
     },
     async loadTasks() {
       const tasks = await fetch("http://localhost:3000/api/v1/tasks/", {
