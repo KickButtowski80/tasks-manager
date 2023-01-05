@@ -21,7 +21,14 @@
           ></i>
         </span>
         <span ref="taskTitle" class="task-title">{{ task.name }}</span>
+   
       </h5>
+      <span
+          class="task-edit-message"
+          :class="{ ' task-accepted-edition': isEditAccepted }"
+          style="font-size: 16px"
+        >
+          edited</span>
       <div class="task-btns" ref="btns">
         <button type="button" class="edit-btn" @click="editTask">
           <i class="fas fa-edit"></i>
@@ -30,6 +37,7 @@
           <i class="fas fa-trash"></i>
         </button>
       </div>
+
       <div class="edit-btns" ref="editBtns">
         <button type="button" @click="acceptEdit">
           <i class="fa fa-check"></i>
@@ -52,6 +60,7 @@ export default {
       originalTask: { ...this.task },
       isEditing: false,
       isDeleting: false,
+      isEditAccepted: false,
     };
   },
   methods: {
@@ -76,9 +85,14 @@ export default {
     acceptEdit() {
       this.task.name = this.$refs.taskTitle.innerText;
       this.$emit("edited-task", this.task);
-
-      this.isEditing = false;
-      this.$refs.taskTitle.contentEditable = true;
+     
+      this.isEditAccepted = true;
+      
+      setTimeout(() => {
+        this.isEditAccepted = false;
+        this.isEditing = false;
+        this.$refs.taskTitle.contentEditable = false;
+      },1500);
     },
     cancelEdit() {
       this.$refs.taskTitle.innerText = this.originalTask.name;
@@ -86,7 +100,7 @@ export default {
       this.task.name = this.originalTask.name;
       this.$emit("no-edited-task", this.originalTask);
 
-      this.$refs.taskTitle.contentEditable = true;
+      this.$refs.taskTitle.contentEditable = false;
       this.isEditing = false;
     },
   },
@@ -94,6 +108,14 @@ export default {
 </script>
 
 <style scoped>
+.task-edit-message{
+  display: none;
+}
+.task-accepted-edition {
+  color: red; 
+  display: inline-block;
+}
+
 [contenteditable] {
   outline: 0px solid transparent;
 }

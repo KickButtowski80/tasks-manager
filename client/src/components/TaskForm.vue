@@ -73,7 +73,6 @@ export default {
         const addedTask = await response.json();
         if (addedTask) {
           if (Object.keys(addedTask).includes("msg")) {
-            debugger;
             this.validationMsg = addedTask.msg.errors.name.message;
             this.isError = true;
             this.resetForm();
