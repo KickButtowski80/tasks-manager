@@ -14,19 +14,6 @@
       </button>
     </div>
     <div class="form-alert">
-      <!-- <span
-        :class="{
-          'text-danger': isError,
-          'text-success': !isError,
-          'show-off-text': isShowOff
-        }"
-      >
-        <span :class="{ 'text-underline': !isError }">
-          {{ taskNameMg }}
-        </span>
-        {{ restMg }}
-      </span> -->
-
       <span
         :class="{
           'text-danger': isError,
@@ -34,7 +21,10 @@
           'show-off-text': isShowOff,
         }"
       >
-        {{ validationMsg }} -- {{ isError }}
+        <span :class="{ 'text-underline': !isError }">
+          {{ taskNameMsg }}
+        </span>
+        {{ validationMsg }}
       </span>
     </div>
   </form>
@@ -49,20 +39,20 @@ export default {
       validationMsg: "",
       isError: false,
       isShowOff: false,
-      taskNameMg: "",
-      restMg: "",
+      taskNameMsg: "",
     };
   },
   watch: {
-    postValidationMsg(n, o) {
-      const { msg, status } = n;
-      this.taskNameMg = msg.match(/^.*(?=(\ was)) /g)[0];
-      this.restMg = msg.split(this.taskNameMg)[1];
-      this.isError = status === "error" ? true : false;
-      this.isShowOff = true;
+    validationMsg(n, o) {
+      if (this.isError) {
+        this.validationMsg = n;
+      } else if (!this.isError) {
+        // debugger;
+        this.isShowOff = true;
+      }
       setTimeout(() => {
-        this.taskNameMg = "";
-        this.restMg = "";
+        this.taskNameMsg = "";
+        this.validationMsg = "";
         this.isShowOff = false;
       }, 3000);
     },
@@ -91,9 +81,10 @@ export default {
             _id: addedTask.task._id,
             name: this.taskName,
             completed: false,
-          }
+          };
           this.$emit("added-task", addedJob);
-          this.validationMsg = `${this.taskName} was added successfully!`;
+          this.taskNameMsg = this.taskName;
+          this.validationMsg = `was added successfully!`;
           this.isError = false;
           this.taskName = "";
         }
