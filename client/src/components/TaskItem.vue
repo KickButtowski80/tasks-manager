@@ -159,7 +159,7 @@ input[type="text"] {
 }
 
 input[type="text"]:focus {
-  border: none;
+  outline: none;
 }
 
 .task-edit-message1 {
