@@ -167,7 +167,7 @@ input[type="text"]:focus {
   display: none;
 }
 .task-accepted-edition {
-  color: rgb(0, 255, 94);
+  color: rgb(9, 166, 58);
   display: inline-block;
 }
 
