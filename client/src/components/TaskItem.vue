@@ -137,7 +137,8 @@ export default {
     cancelEdit() {
       this.taskName = this.originalTask.name;
       this.task.completed = this.originalTask.completed;
-
+      this.isEditAccepted = false;
+      this.editMsg= 'editing was canceled'
       setTimeout(() => {
         this.isEditAccepted = false;
         this.isEditing = false;
