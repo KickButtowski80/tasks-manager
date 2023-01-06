@@ -57,8 +57,7 @@
           'task-accepted-edition': isEditAccepted,
           'task-un-accepted-edition': !isEditAccepted,
         }"
-        style="font-size: 16px;"
-
+        style="font-size: 16px"
       >
         {{ editMsg }}</span
       >
@@ -114,11 +113,28 @@ export default {
       this.isEditing = true;
       this.$refs.taskTitle.focus();
     },
-    acceptEdit() {
+    taskNameValidation() {
       if (this.taskName.length === 0) {
         this.isEditAccepted = false;
         this.editMsg = "Cannot Have Empty Name";
-      } else {
+        return this.isEditAccepted;
+      }
+      if (1 < this.taskName.lenght || this.taskName.length < 5) {
+        this.isEditAccepted = false;
+        this.editMsg = "Cannot Have Name Less than 5 Chars";
+
+        return;
+      }
+      if (this.taskName.length > 20) {
+        this.isEditAccepted = false;
+        this.editMsg = "Cannot Have Name More than 20 Chars";
+        return this.isEditAccepted;
+      }
+      return !this.isEditAccepted;
+    },
+    acceptEdit() {
+      const validationStatus = this.taskNameValidation();
+      if (validationStatus) {
         const currentTask = {
           _id: this.task._id,
           name: this.taskName,
@@ -138,7 +154,7 @@ export default {
       this.taskName = this.originalTask.name;
       this.task.completed = this.originalTask.completed;
       this.isEditAccepted = false;
-      this.editMsg= 'editing was canceled'
+      this.editMsg = "editing was canceled";
       setTimeout(() => {
         this.isEditAccepted = false;
         this.isEditing = false;
@@ -160,7 +176,8 @@ input[type="text"] {
 }
 
 input[type="text"]:focus {
-  outline: none;
+  /* outline: none; */
+  outline: thin dotted; 
 }
 
 .task-edit-message1 {
