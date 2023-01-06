@@ -142,7 +142,7 @@ export default {
         };
         this.editTask(currentTask);
         this.isEditAccepted = true;
-        this.editMsg = `${this.taskName} Was Edited`;
+        this.editMsg = `${this.taskName} Was Edited Successfuly`;
         setTimeout(() => {
           this.isEditAccepted = false;
           this.isEditing = false;
