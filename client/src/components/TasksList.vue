@@ -67,17 +67,17 @@ export default {
       }, 2000);
     },
     async editedTask(task) {
-      const response = await fetch(
-        "http://localhost:3000/api/v1/tasks/" + task._id,
-        {
-          method: "PATCH",
-          body: JSON.stringify(task),
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-          },
-        }
-      );
-      console.log("patching reponse is", await response.json());
+      // const response = await fetch(
+      //   "http://localhost:3000/api/v1/tasks/" + task._id,
+      //   {
+      //     method: "PATCH",
+      //     body: JSON.stringify(task),
+      //     headers: {
+      //       "Content-type": "application/json; charset=UTF-8",
+      //     },
+      //   }
+      // );
+      // console.log("patching reponse is", await response.json());
     },
     noEditedTask(event) {
       console.log("no edited task", event);

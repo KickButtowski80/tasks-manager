@@ -20,17 +20,17 @@
             @click="task.completed = !task.completed"
           ></i>
         </span>
-        <span ref="taskTitle" class="task-title">{{ task.name }}</span>
-   
+        <input
+          ref="taskTitle"
+          type="text"
+          class="task-title"
+          v-model="taskName"
+          :disabled="!isEditing"
+        />
       </h5>
-      <span
-          class="task-edit-message"
-          :class="{ ' task-accepted-edition': isEditAccepted }"
-          style="font-size: 16px"
-        >
-          edited</span>
+
       <div class="task-btns" ref="btns">
-        <button type="button" class="edit-btn" @click="editTask">
+        <button type="button" class="edit-btn" @click="startEditing">
           <i class="fas fa-edit"></i>
         </button>
         <button type="button" class="delete-btn" @click="deleteTask">
@@ -47,6 +47,22 @@
         </button>
       </div>
     </div>
+    <div
+      :class="{
+        'task-editing': isEditing,
+      }"
+    >
+      <span
+        :class="{
+          'task-accepted-edition': isEditAccepted,
+          'task-un-accepted-edition': !isEditAccepted,
+        }"
+        style="font-size: 16px;"
+
+      >
+        {{ editMsg }}</span
+      >
+    </div>
   </div>
 </template>
 
@@ -61,6 +77,8 @@ export default {
       isEditing: false,
       isDeleting: false,
       isEditAccepted: false,
+      taskName: this.task.name,
+      editMsg: "",
     };
   },
   methods: {
@@ -77,42 +95,83 @@ export default {
         this.isDeleting = false;
       }, 2000);
     },
-    editTask() {
+
+    async editTask(task) {
+      const response = await fetch(
+        "http://localhost:3000/api/v1/tasks/" + task._id,
+        {
+          method: "PATCH",
+          body: JSON.stringify(task),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        }
+      );
+      console.log("patching reponse is", await response.json());
+      this.$emit("edited-task", this.task);
+    },
+    startEditing() {
       this.isEditing = true;
-      this.$refs.taskTitle.contentEditable = true;
       this.$refs.taskTitle.focus();
     },
     acceptEdit() {
-      this.task.name = this.$refs.taskTitle.innerText;
-      this.$emit("edited-task", this.task);
-     
-      this.isEditAccepted = true;
-      
+      if (this.taskName.length === 0) {
+        this.isEditAccepted = false;
+        this.editMsg = "Cannot Have Empty Name";
+      } else {
+        const currentTask = {
+          _id: this.task._id,
+          name: this.taskName,
+          completed: this.task.completed,
+        };
+        this.editTask(currentTask);
+        this.isEditAccepted = true;
+        this.editMsg = `${this.taskName} Was Edited`;
+        setTimeout(() => {
+          this.isEditAccepted = false;
+          this.isEditing = false;
+          this.editMsg = "";
+        }, 1500);
+      }
+    },
+    cancelEdit() {
+      this.taskName = this.originalTask.name;
+      this.task.completed = this.originalTask.completed;
+
       setTimeout(() => {
         this.isEditAccepted = false;
         this.isEditing = false;
-        this.$refs.taskTitle.contentEditable = false;
-      },1500);
-    },
-    cancelEdit() {
-      this.$refs.taskTitle.innerText = this.originalTask.name;
-      this.task.completed = this.originalTask.completed;
-      this.task.name = this.originalTask.name;
-      this.$emit("no-edited-task", this.originalTask);
-
-      this.$refs.taskTitle.contentEditable = false;
-      this.isEditing = false;
+        this.editMsg = "";
+      }, 1500);
     },
   },
 };
 </script>
 
 <style scoped>
-.task-edit-message{
+input[type="text"] {
+  width: 85%;
+  margin-left: 5px;
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 22px;
+}
+
+input[type="text"]:focus {
+  border: none;
+}
+
+.task-edit-message1 {
   display: none;
 }
 .task-accepted-edition {
-  color: red; 
+  color: rgb(0, 255, 94);
+  display: inline-block;
+}
+
+.task-un-accepted-edition {
+  color: rgb(167, 83, 101);
   display: inline-block;
 }
 
