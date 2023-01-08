@@ -81,17 +81,24 @@ export default {
   },
   methods: {
     async deleteTask() {
-      await fetch("http://localhost:3000/api/v1/tasks/" + this.task._id, {
-        method: "DELETE",
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
-      this.isDeleting = true;
-      this.$emit("sent-deleted-task", this.task);
-      setTimeout(() => {
-        this.isDeleting = false;
-      }, 2000);
+      const response = await fetch(
+        "http://localhost:3000/api/v1/tasks/" + this.task._id,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        this.isDeleting = true;
+        this.$emit("sent-deleted-task", this.task);
+        setTimeout(() => {
+          this.isDeleting = false;
+        }, 2000);
+      } else {
+        console.log('something has gone in deleation process')
+      }
     },
 
     async editTask(task) {
@@ -112,7 +119,7 @@ export default {
       this.$refs.taskTitle.focus();
     },
     taskNameValidation() {
-      let nameOfTask = this.taskName.trim()
+      let nameOfTask = this.taskName.trim();
       if (nameOfTask.length === 0) {
         this.isEditAccepted = false;
         this.editMsg = "Cannot Have Empty Name";
