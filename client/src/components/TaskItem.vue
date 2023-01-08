@@ -67,9 +67,8 @@
 
 <script>
 export default {
-  emits: ["no-edited-task", "edited-task", "sent-deleted-task"],
+  emits: ["sent-deleted-task"],
   props: ["task"],
-
   data() {
     return {
       originalTask: { ...this.task },
@@ -107,25 +106,25 @@ export default {
         }
       );
       console.log("patching reponse is", await response.json());
-      this.$emit("edited-task", this.task);
     },
     startEditing() {
       this.isEditing = true;
       this.$refs.taskTitle.focus();
     },
     taskNameValidation() {
-      if (this.taskName.length === 0) {
+      let nameOfTask = this.taskName.trim()
+      if (nameOfTask.length === 0) {
         this.isEditAccepted = false;
         this.editMsg = "Cannot Have Empty Name";
         return this.isEditAccepted;
       }
-      if (1 < this.taskName.lenght || this.taskName.length < 5) {
+      if (1 < nameOfTask.lenght || nameOfTask.length < 5) {
         this.isEditAccepted = false;
         this.editMsg = "Cannot Have Name Less than 5 Chars";
 
         return;
       }
-      if (this.taskName.length > 20) {
+      if (nameOfTask.length > 20) {
         this.isEditAccepted = false;
         this.editMsg = "Cannot Have Name More than 20 Chars";
         return this.isEditAccepted;
@@ -149,6 +148,7 @@ export default {
           this.editMsg = "";
         }, 1500);
       }
+      console.log("validation has gone wrong");
     },
     cancelEdit() {
       this.taskName = this.originalTask.name;
@@ -177,7 +177,7 @@ input[type="text"] {
 
 input[type="text"]:focus {
   /* outline: none; */
-  outline: thin dotted; 
+  outline: thin dotted;
 }
 
 .task-edit-message1 {
@@ -218,7 +218,8 @@ input[type="text"]:focus {
   display: inline;
 }
 .task-editing .task-btns,
-.task-deleting .task-btns {
+.task-deleting .task-btns,
+.task-deleting .edit-btns {
   display: none;
 }
 .task-editing .edit-btns {

@@ -82,7 +82,7 @@ export default {
             _id: addedTask.task._id,
             name: this.taskName,
             completed: false,
-          };
+          }; 
           this.$emit("added-task", addedJob);
           this.isShowOff = true;
           this.isError = false;

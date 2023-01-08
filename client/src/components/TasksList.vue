@@ -6,13 +6,9 @@
         <div></div>
       </div>
     </div>
-    <div class="tasks" v-for="task in tasks" :key="task.id">
-      <task-item
-        :task="task"
-        v-on:sent-deleted-task="receivedDelT"
-        v-on:edited-task="editedTask"
-        v-on:no-edited-task="noEditedTask"
-      ></task-item>
+    <div class="tasks" v-for="task in tasks" :key="task._id">
+      <task-item :task="task" v-on:sent-deleted-task="receivedDelT">
+      </task-item>
     </div>
   </section>
 </template>
@@ -21,10 +17,10 @@
 import TaskItem from "./TaskItem.vue";
 
 export default {
+  props: ["addedJob"],
   components: {
     TaskItem,
   },
-  props: ["task"],
   data() {
     return {
       tasks: [],
@@ -37,14 +33,15 @@ export default {
     this.loadTasks();
   },
   watch: {
-    task(newVal, oldVal) {
+    addedJob(newTaskVal, oldVal) {
       // when the task props recieved, it can be added to tasks
       this.addTask();
+      this.loadTasks();
     },
   },
   methods: {
     addTask() {
-      this.tasks.unshift(this.task);
+      this.tasks.unshift(this.addedJob);
     },
     async loadTasks() {
       const tasks = await fetch("http://localhost:3000/api/v1/tasks/", {
@@ -64,23 +61,7 @@ export default {
 
       setTimeout(() => {
         this.tasks.splice(id, 1);
-      }, 2000);
-    },
-    async editedTask(task) {
-      // const response = await fetch(
-      //   "http://localhost:3000/api/v1/tasks/" + task._id,
-      //   {
-      //     method: "PATCH",
-      //     body: JSON.stringify(task),
-      //     headers: {
-      //       "Content-type": "application/json; charset=UTF-8",
-      //     },
-      //   }
-      // );
-      // console.log("patching reponse is", await response.json());
-    },
-    noEditedTask(event) {
-      console.log("no edited task", event);
+      }, 1500);
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <task-form v-on:added-task="gotTask"></task-form>
-    <tasks-list :task="sendTask"></tasks-list>
+    <task-form v-on:added-task="gotAddedTask"></task-form>
+    <tasks-list :addedJob="sendAddedTask"></tasks-list>
   </div>
 </template>
 
@@ -15,12 +15,12 @@ export default {
   },
   data() {
     return {
-      sendTask: {},
+      sendAddedTask: {},
     };
   },
   methods: {
-    gotTask(task) {
-      this.sendTask = task;
+    gotAddedTask(task) { 
+      this.sendAddedTask = task;
     },
   },
 };
