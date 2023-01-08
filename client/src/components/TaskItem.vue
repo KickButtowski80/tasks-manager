@@ -218,7 +218,6 @@ input[type="text"]:focus {
   display: inline;
 }
 .task-editing .task-btns,
-.task-deleting .task-btns,
 .task-deleting .edit-btns {
   display: none;
 }
