@@ -5,7 +5,7 @@ const tasks = require('./routes/tasks')
 const mongoose = require("mongoose");
 const dotenv = require('dotenv')
 dotenv.config();
-
+const notFound = require('./middleware/not-found')
 const connectDB = require('./db/connect')
 const port = 3000;
 // const serveStatic = require('serve-static');
@@ -21,6 +21,7 @@ app.use(express.json())
 
 
 app.use('/api/v1/tasks', tasks)
+app.use(notFound)
 
 const start = async () => {
     try {
