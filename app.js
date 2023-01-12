@@ -9,8 +9,8 @@ const notFound = require('./middleware/not-found')
 const connectDB = require('./db/connect')
 const port = 3000;
 
-const path = __dirname + '/client/dist';
-app.use(express.static(path))
+const fontEndPath = __dirname + '/client/dist';
+app.use(express.static(fontEndPath))
 
 const cors = require("cors");
 
