@@ -5,15 +5,16 @@ const tasks = require('./routes/tasks')
 const mongoose = require("mongoose");
 const dotenv = require('dotenv')
 dotenv.config();
-
+const notFound = require('./middleware/not-found')
 const connectDB = require('./db/connect')
 const port = 3000;
-// const serveStatic = require('serve-static');
-// app.use(express.static('client/public'))
-// app.use(serveStatic(__dirname + "./public"));
+
+const path = __dirname + '/client/dist';
+app.use(express.static(path))
+
 const cors = require("cors");
 
-// app.options("*", cors({ origin: 'http://localhost:3000', optionsSuccessStatus: 200 }));
+
 
 
 app.use(cors())
@@ -21,6 +22,10 @@ app.use(express.json())
 
 
 app.use('/api/v1/tasks', tasks)
+app.get('/', function (req, res) {
+    res.sendFile(path + "index.html");
+});
+app.use(notFound)
 
 const start = async () => {
     try {
