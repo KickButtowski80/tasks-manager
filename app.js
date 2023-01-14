@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const dotenv = require('dotenv')
 dotenv.config();
 const notFound = require('./middleware/not-found')
+const errorHandlerMiddleware = require('./middleware/error-handler')
 const connectDB = require('./db/connect')
 const port = 3000;
 
@@ -23,6 +24,7 @@ app.get('/', function (req, res) {
     res.sendFile(path + "index.html");
 });
 app.use(notFound)
+app.use(errorHandlerMiddleware)
 
 const start = async () => {
     try {
