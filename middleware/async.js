@@ -3,7 +3,7 @@ const asyncWrapper = (fn) => {
     try {
       await fn(req, res, next)
     } catch (error) {    
-      error.status = 500  
+      error.statusCode = 500
       // send error to next middleware which is error-hanlder.js
       next(error)
     }
