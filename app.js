@@ -8,7 +8,8 @@ dotenv.config();
 const notFound = require('./middleware/not-found')
 const errorHandlerMiddleware = require('./middleware/error-handler')
 const connectDB = require('./db/connect')
-const port = 3000;
+const port = process.env.PORT || 3000; // for development port number is 3000
+
 
 const fontEndPath = __dirname + '/client/dist';
 app.use(express.static(fontEndPath))
